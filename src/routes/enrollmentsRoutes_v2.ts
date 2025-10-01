@@ -135,8 +135,8 @@ router.post("/:studentId", authenticateToken, checkRoles, (req: CustomRequest, r
     }
 
     const newEnroll: Enrollment = {
-      studentId: sid,
-      courseId,
+    studentId: sid!,
+    courseId,
     };
     enrollments.push(newEnroll);
 

@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
+import type { SignOptions } from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -64,8 +65,11 @@ router.post("/login", (req: Request, res: Response) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, jwt_secret, { expiresIn: jwt_expires || "1h" });
-
+    const token = jwt.sign(
+    payload,
+    jwt_secret as string,
+    { expiresIn: jwt_expires || "1h" } as SignOptions
+    );
 
     (user.tokens = user.tokens ? [...user.tokens, token] : [token]);
 
