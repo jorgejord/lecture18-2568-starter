@@ -19,8 +19,13 @@ const router = Router();
 function aggregateEnrollments() {
   const map: Record<string, string[]> = {};
   enrollments.forEach((e) => {
-    if (!map[e.studentId]) map[e.studentId] = [];
-    if (!map[e.studentId].includes(e.courseId)) map[e.studentId].push(e.courseId);
+    if (!map[e.studentId]) {
+    map[e.studentId] = [];
+    }
+    const studentCourses = map[e.studentId]!;
+    if (!studentCourses.includes(e.courseId)) {
+    studentCourses.push(e.courseId);
+    }
   });
   return Object.keys(map).map((sid) => ({
     studentId: sid,
@@ -154,11 +159,11 @@ router.delete("/:studentId", authenticateToken, checkRoles, (req: CustomRequest,
     const sid = req.params.studentId;
     const payload = req.user;
 
-    if (payload?.role !== "STUDENT" || payload.studentId !== sid) {
-      return res.status(403).json({
+    if (payload?.role !== "STUDENT" || !payload.studentId || payload.studentId !== sid) {
+    return res.status(403).json({
         success: false,
         message: "You are not allowed to modify another student's data",
-      });
+    });
     }
 
     const parse = zEnrollmentBody.safeParse({ studentId: sid, ...req.body });
